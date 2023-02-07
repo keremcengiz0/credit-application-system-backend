@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -36,4 +39,8 @@ public class CustomerDTO {
     @NotBlank(message = "Phone Number is required!")
     @Pattern(regexp = "(^[0-9]{10}$)", message = "The phone number must consist of numbers and must be 10 characters (not including 0)!")
     private String phoneNumber;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
+
 }
