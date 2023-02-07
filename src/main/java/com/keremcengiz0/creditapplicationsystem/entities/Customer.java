@@ -43,9 +43,12 @@ public class Customer extends BaseEntity{
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
-    @Column(name = "guarantee", nullable = true, precision=6, scale=0)
-    private BigDecimal guarantee;
-
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private Application application;
+
+    /*
+    @Column(name = "guarantee", nullable = true, precision=6, scale=0)
+    private BigDecimal guarantee;
+    */
+
 }
