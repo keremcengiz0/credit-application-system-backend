@@ -20,7 +20,7 @@ public class ScoreService {
         this.success = this.score >= 500;
     }
 
-    public int getScore() {
+    public int getScore(String identitiy) {
         return this.score;
     }
 

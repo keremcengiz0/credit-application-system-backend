@@ -9,5 +9,5 @@ public interface CustomerService {
     CustomerDTO update(CustomerDTO customerDTO);
     void delete(Long id);
     List<CustomerDTO> getAll();
-    CustomerDTO get(Long id);
+    CustomerDTO getOneCustomer(Long id);
 }

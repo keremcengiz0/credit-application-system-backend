@@ -13,5 +13,5 @@ public interface ApplicationService {
     ApplicationDTO update(Customer customer, Long applicationId);
     List<ApplicationDTO> getAll();
     ApplicationDTO getStatus(String identityNumber);
-    Map<BigDecimal, CreditResult> applicationResult(Integer score, BigDecimal salary);
+    Map<String, Object> applicationResult(int score, BigDecimal salary);
 }

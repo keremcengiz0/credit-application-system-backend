@@ -49,8 +49,8 @@ public class CustomerController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<CustomerDTO> get(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<CustomerDTO> getOneCustomer(@PathVariable(name = "id") Long id) {
         log.info("CustomerController: A request has been received to list one customer by id. ");
-        return new ResponseEntity<>(this.customerService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(this.customerService.getOneCustomer(id), HttpStatus.OK);
     }
 }
