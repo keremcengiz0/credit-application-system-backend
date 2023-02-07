@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class ICustomerService implements CustomerService {
+public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final ApplicationService applicationService;
@@ -26,7 +26,7 @@ public class ICustomerService implements CustomerService {
 
 
     @Autowired
-    public ICustomerService(CustomerRepository customerRepository, ApplicationService applicationService, CustomerMapper customerMapper) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, ApplicationService applicationService, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
         this.applicationService = applicationService;
         this.customerMapper = customerMapper;

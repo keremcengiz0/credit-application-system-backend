@@ -60,7 +60,12 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.6.6</version>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20220924</version>
+		</dependency>
 	</dependencies>
 
 	<build>

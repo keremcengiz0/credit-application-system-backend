@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class IApplicationService implements ApplicationService {
+public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationDTO makeAnApplication(Customer customer) {
         return null;
