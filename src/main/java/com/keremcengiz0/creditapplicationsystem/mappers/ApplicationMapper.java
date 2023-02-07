@@ -12,8 +12,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ApplicationMapper {
 
-    ApplicationMapper INSTANCE = Mappers.getMapper(ApplicationMapper.class);
-
     Application fromApplicationDtoToApplication(ApplicationDTO applicationDTO);
 
     ApplicationDTO fromApplicationToApplicationDto(Application application);

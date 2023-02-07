@@ -103,10 +103,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         }else if(score >= 500 && score < 1000 && salary.intValue() <= 5000){
             resultMap.put("creditLimit", BigDecimal.valueOf(10000));
             resultMap.put("creditResult", CreditResult.CONFIRMED);
-        }else if(score >= 500 && score < 1000 && salary.intValue() > 5000){
+        }else if(score >= 500 && score < 1000 && (salary.intValue() > 5000 && salary.intValue() <10000)){
             resultMap.put("creditLimit", BigDecimal.valueOf(20000));
             resultMap.put("creditResult", CreditResult.CONFIRMED);
-        }else if(score >= 1000){
+        }else if(score >= 500 && score < 1000 && salary.intValue() > 10000){
+        resultMap.put("creditLimit", salary.multiply(BigDecimal.valueOf(CreditLimitMultiplier.CREDIT_LIMIT_MULTIPLIER.getValue()/2)));
+        resultMap.put("creditResult", CreditResult.CONFIRMED);
+       }else if(score >= 1000){
             resultMap.put("creditLimit", salary.multiply(BigDecimal.valueOf(CreditLimitMultiplier.CREDIT_LIMIT_MULTIPLIER.getValue())));
             resultMap.put("creditResult", CreditResult.CONFIRMED);
         }else{

@@ -10,11 +10,11 @@ public class ScoreService {
     private int score;
     private boolean success;
 
-    public void setScore() {
+    public ScoreService() {
         Random random = new Random();
         this.score = random.nextInt(1700) + 300;
-        log.info("Random score generated.");
-    }
+        log.info("Random score generated.");    }
+
 
     public void setSuccess() {
         this.success = this.score >= 500;

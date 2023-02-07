@@ -43,7 +43,7 @@ public class Customer extends BaseEntity{
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.MERGE)
     private Application application;
 
     /*

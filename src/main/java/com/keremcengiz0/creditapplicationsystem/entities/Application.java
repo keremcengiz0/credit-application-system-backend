@@ -29,7 +29,7 @@ public class Application extends BaseEntity{
     @Column(name = "credit_result")
     private CreditResult creditResult;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 }
