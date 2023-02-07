@@ -2,20 +2,21 @@ package com.keremcengiz0.creditapplicationsystem.mappers;
 
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.entities.Customer;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
 
-    @Named("fromCustomerDtoToCustomer")
+    CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
     Customer fromCustomerDtoToCustomer(CustomerDTO customerDTO);
-
-    @Named("fromCustomerToCustomerDto")
     CustomerDTO fromCustomerToCustomerDto(Customer customer);
-
-    @Named("fromCustomerListToCustomerDtoList")
     List<CustomerDTO> fromCustomerListToCustomerDtoList(List<Customer> customers);
 
 }
