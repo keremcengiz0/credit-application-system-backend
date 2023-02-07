@@ -25,15 +25,12 @@ public class Customer extends BaseEntity{
     private Long id;
 
     @Column(name ="identity_number", nullable = false, length = 11)
-    @NotNull(message = "identity_number cannot be null!")
     private String identityNumber;
 
     @Column(name ="first_name", nullable = false, length = 50)
-    @NotNull(message = "first_name cannot be null!")
     private String firstName;
 
-    @Column(name ="first_name", nullable = false, length = 50)
-    @NotNull(message = "first_name cannot be null!")
+    @Column(name ="last_name", nullable = false, length = 50)
     private String lastName;
 
     @Column(name = "salary", nullable = false, precision=6, scale=0)
