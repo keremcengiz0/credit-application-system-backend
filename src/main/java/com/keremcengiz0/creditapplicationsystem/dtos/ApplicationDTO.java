@@ -24,6 +24,11 @@ public class ApplicationDTO {
     @Digits(integer = 6, fraction = 0)
     private BigDecimal salary;
 
+    @DecimalMax(value = "999999", message = "Guarantee should be no more than 999999₺")
+    @DecimalMin(value = "2000", message = "Guarantee must be at least 2000₺")
+    @Digits(integer = 6, fraction = 0)
+    private BigDecimal guarantee;
+
     private int creditScore;
     private BigDecimal creditLimit;
     private CreditResult creditResult;

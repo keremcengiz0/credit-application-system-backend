@@ -1,6 +1,7 @@
 package com.keremcengiz0.creditapplicationsystem.services.concretes;
 
 import com.keremcengiz0.creditapplicationsystem.dtos.ApplicationDTO;
+import com.keremcengiz0.creditapplicationsystem.dtos.ApplicationResultDTO;
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.entities.Application;
 import com.keremcengiz0.creditapplicationsystem.entities.Customer;
@@ -62,17 +63,19 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         this.scoreService.generateRandomScore();
 
-        Map<String, Object> result = applicationResult(this.scoreService.getScore(customer.getIdentityNumber()), applicationCreateRequest.getSalary());
+        ApplicationResultDTO applicationResultDTO = applicationResult(this.scoreService.getScore(customer.getIdentityNumber()),
+                applicationCreateRequest.getSalary(),
+                applicationCreateRequest.getGuarantee());
+
         log.info("Credit Score: " + this.scoreService.getScore(customer.getIdentityNumber()));
-        BigDecimal creditLimit = (BigDecimal) result.get("creditLimit");
-        CreditResult creditResult = (CreditResult) result.get("creditResult");
 
         Application application = Application.builder()
                 .customer(customer)
-                .creditLimit(creditLimit)
-                .creditResult(creditResult)
+                .creditLimit(applicationResultDTO.getCreditLimit())
+                .creditResult(applicationResultDTO.getCreditResult())
                 .creditScore(this.scoreService.getScore(customer.getIdentityNumber()))
                 .salary(applicationCreateRequest.getSalary())
+                .guarantee(applicationCreateRequest.getGuarantee())
                 .build();
 
         Boolean status = (application.getCreditResult() == CreditResult.CONFIRMED);
@@ -88,12 +91,14 @@ public class ApplicationServiceImpl implements ApplicationService {
         return this.applicationMapper.fromApplicationListToApplicationDtoList(applications);
     }
 
+
+
     @Override
     public List<ApplicationDTO> getStatusWithParam(String identityNumber, LocalDate birthDate) {
         List<Application> applicationList = this.applicationRepository.getAllApplicationsByCustomerIdentityNumberAndBirthdate(identityNumber, birthDate);
 
         if(applicationList.isEmpty()) {
-            throw new NotFoundException("The applications for" + identityNumber + " number and " + birthDate + " birthdate was not found!");
+            throw new NotFoundException("The applications for " + identityNumber + " number and " + birthDate + " birthdate was not found!");
         }
 
         return this.applicationMapper.fromApplicationListToApplicationDtoList(applicationList);
@@ -101,28 +106,55 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     @Override
-    public Map<String, Object> applicationResult(int score, BigDecimal salary) {
-        Map<String, Object> resultMap = new HashMap<>();
-        if(score < 500){
-            resultMap.put("creditLimit", BigDecimal.valueOf(0));
-            resultMap.put("creditResult", CreditResult.UNCONFIRMED);
-        }else if(score >= 500 && score < 1000 && salary.intValue() <= 5000){
-            resultMap.put("creditLimit", BigDecimal.valueOf(10000));
-            resultMap.put("creditResult", CreditResult.CONFIRMED);
-        }else if(score >= 500 && score < 1000 && (salary.intValue() > 5000 && salary.intValue() <10000)){
-            resultMap.put("creditLimit", BigDecimal.valueOf(20000));
-            resultMap.put("creditResult", CreditResult.CONFIRMED);
-        }else if(score >= 500 && score < 1000 && salary.intValue() > 10000){
-        resultMap.put("creditLimit", salary.multiply(BigDecimal.valueOf(CreditLimitMultiplier.CREDIT_LIMIT_MULTIPLIER.getValue()/2)));
-        resultMap.put("creditResult", CreditResult.CONFIRMED);
-       }else if(score >= 1000){
-            resultMap.put("creditLimit", salary.multiply(BigDecimal.valueOf(CreditLimitMultiplier.CREDIT_LIMIT_MULTIPLIER.getValue())));
-            resultMap.put("creditResult", CreditResult.CONFIRMED);
-        }else{
-            resultMap.put("creditLimit", BigDecimal.valueOf(0));
-            resultMap.put("creditResult", CreditResult.UNCONFIRMED);
-        }
-        return resultMap;
-    }
+    public ApplicationResultDTO applicationResult(int score, BigDecimal salary, BigDecimal guarantee) {
 
+        if(score >= 500 && score < 1000 && salary.intValue() <= 5000) {
+            ApplicationResultDTO applicationResultDTO = new ApplicationResultDTO();
+
+            if(guarantee != null) {
+                applicationResultDTO.setCreditLimit(BigDecimal.valueOf(10000).add(guarantee.multiply(BigDecimal.valueOf(0.1))));
+            } else {
+                applicationResultDTO.setCreditLimit(BigDecimal.valueOf(10000));
+            }
+            applicationResultDTO.setCreditResult(CreditResult.CONFIRMED);
+            return applicationResultDTO;
+        }
+
+        if(score >= 500 && score < 1000 && salary.intValue() <= 10000) {
+            ApplicationResultDTO applicationResultDTO = new ApplicationResultDTO();
+            if(guarantee != null) {
+                applicationResultDTO.setCreditLimit(BigDecimal.valueOf(20000).add(guarantee.multiply(BigDecimal.valueOf(0.2))));
+            } else {
+                applicationResultDTO.setCreditLimit(BigDecimal.valueOf(20000));
+            }
+            applicationResultDTO.setCreditResult(CreditResult.CONFIRMED);
+            return applicationResultDTO;
+        }
+
+        if(score >= 500 && score < 1000 && salary.intValue() > 10000) {
+            ApplicationResultDTO applicationResultDTO = new ApplicationResultDTO();
+            if(guarantee != null) {
+                applicationResultDTO.setCreditLimit(salary.multiply(BigDecimal.valueOf(CreditLimitMultiplier.CREDIT_LIMIT_MULTIPLIER.getValue()/2))
+                        .add(guarantee.multiply(BigDecimal.valueOf(0.25))));
+            } else {
+                applicationResultDTO.setCreditLimit(salary.multiply(BigDecimal.valueOf(CreditLimitMultiplier.CREDIT_LIMIT_MULTIPLIER.getValue()/2)));
+            }
+            applicationResultDTO.setCreditResult(CreditResult.CONFIRMED);
+            return applicationResultDTO;
+        }
+
+        if(score >= 1000) {
+            ApplicationResultDTO applicationResultDTO = new ApplicationResultDTO();
+            if(guarantee != null) {
+                applicationResultDTO.setCreditLimit(salary.multiply(BigDecimal.valueOf(CreditLimitMultiplier.CREDIT_LIMIT_MULTIPLIER.getValue()))
+                        .add(guarantee.multiply(BigDecimal.valueOf(0.5))));
+            } else {
+                applicationResultDTO.setCreditLimit(salary.multiply(BigDecimal.valueOf(CreditLimitMultiplier.CREDIT_LIMIT_MULTIPLIER.getValue())));
+            }
+            applicationResultDTO.setCreditResult(CreditResult.CONFIRMED);
+            return applicationResultDTO;
+        }
+
+        return new ApplicationResultDTO(BigDecimal.valueOf(0), CreditResult.UNCONFIRMED);
+    }
 }

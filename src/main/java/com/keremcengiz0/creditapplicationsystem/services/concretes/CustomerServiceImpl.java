@@ -50,19 +50,19 @@ public class CustomerServiceImpl implements CustomerService {
 
         if(!toUpdateCustomer.getIdentityNumber().equals(customerDTO.getIdentityNumber())) {
             if(this.customerRepository.existsByIdentityNumber(customerDTO.getIdentityNumber())) {
-                throw new IdentityNumberIsAlreadyExistException(customerDTO.getIdentityNumber() + " --> This id number already exists.");
+                throw new IdentityNumberIsAlreadyExistException(customerDTO.getIdentityNumber() + " --> This identity number already exists.");
             }
         }
 
         if(!toUpdateCustomer.getPhoneNumber().equals(customerDTO.getPhoneNumber())) {
-            if(this.customerRepository.existsByIdentityNumber(customerDTO.getPhoneNumber())) {
+            if(this.customerRepository.existsByPhoneNumber(customerDTO.getPhoneNumber())) {
                 throw new PhoneNumberIsAlreadyExistException(customerDTO.getPhoneNumber() + " --> This phone number already exists.");
             }
         }
 
         toUpdateCustomer = this.customerMapper.fromCustomerDtoToCustomer(customerDTO);
         this.customerRepository.save(toUpdateCustomer);
-        log.info("ICustomerService: Application updated.");
+        log.info("ICustomerService: Customer has been updated.");
         return this.customerMapper.fromCustomerToCustomerDto(toUpdateCustomer);
     }
 

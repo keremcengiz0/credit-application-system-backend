@@ -26,6 +26,9 @@ public class Application extends BaseEntity{
     @Column(name = "salary", nullable = false, precision=6, scale=0)
     private BigDecimal salary;
 
+    @Column(name = "guarantee", nullable = true, precision=6, scale=0)
+    private BigDecimal guarantee;
+
     @Column(name = "credit_score", nullable = false)
     private int creditScore;
 
