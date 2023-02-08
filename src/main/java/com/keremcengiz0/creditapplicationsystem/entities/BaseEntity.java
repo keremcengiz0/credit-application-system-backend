@@ -18,10 +18,10 @@ public class BaseEntity {
     @Column(name = "created_date", nullable = false, updatable = false)
     @CreatedDate
     @JsonIgnore
-    private Instant createdDate = Instant.now();
+    private Instant createdDate = Instant.now().plusSeconds(10800);
 
     @Column(name = "updated_date", nullable = false, updatable = false)
     @LastModifiedDate
     @JsonIgnore
-    private Instant updatedDate = Instant.now();
+    private Instant updatedDate = Instant.now().plusSeconds(10800);
 }

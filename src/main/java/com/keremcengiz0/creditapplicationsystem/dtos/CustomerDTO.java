@@ -31,11 +31,6 @@ public class CustomerDTO {
     @Pattern(regexp = "(^[a-zA-Z]{3,50}$)", message = "The First Name must be of characters!")
     private String lastName;
 
-    @DecimalMax(value = "999999", message = "Salary should be no more than 999999₺")
-    @DecimalMin(value = "2000", message = "Salary must be at least 2000₺")
-    @Digits(integer = 6, fraction = 0)
-    private BigDecimal salary;
-
     @NotBlank(message = "Phone Number is required!")
     @Pattern(regexp = "(^[0-9]{10}$)", message = "The phone number must consist of numbers and must be 10 characters (not including 0)!")
     private String phoneNumber;

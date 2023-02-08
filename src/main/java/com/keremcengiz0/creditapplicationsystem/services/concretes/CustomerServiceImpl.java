@@ -21,30 +21,26 @@ import java.util.Optional;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final ApplicationService applicationService;
     protected final CustomerMapper customerMapper;
 
-
     @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository, ApplicationService applicationService, CustomerMapper customerMapper) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
-        this.applicationService = applicationService;
         this.customerMapper = customerMapper;
     }
 
     @Override
     public CustomerDTO save(CustomerDTO customerDTO) {
         if(this.customerRepository.existsByIdentityNumber(customerDTO.getIdentityNumber())) {
-            throw new IdentityNumberIsAlreadyExistException(customerDTO.getIdentityNumber() + "--> This id number already exists.");
+            throw new IdentityNumberIsAlreadyExistException(customerDTO.getIdentityNumber() + " --> This id number already exists.");
         }
         if(this.customerRepository.existsByPhoneNumber(customerDTO.getPhoneNumber())) {
-            throw new PhoneNumberIsAlreadyExistException(customerDTO.getPhoneNumber() + "--> This phone number already exists.");
+            throw new PhoneNumberIsAlreadyExistException(customerDTO.getPhoneNumber() + " --> This phone number already exists.");
         }
 
         Customer customer = this.customerMapper.fromCustomerDtoToCustomer(customerDTO);
         this.customerRepository.save(customer);
-        log.info("ICustomerService: The application has been created.");
-        this.applicationService.makeAnApplication(customer);
+        log.info("ICustomerService: Customer has been created.");
 
         return this.customerMapper.fromCustomerToCustomerDto(customer);
     }
@@ -55,21 +51,19 @@ public class CustomerServiceImpl implements CustomerService {
 
         if(!toUpdateCustomer.getIdentityNumber().equals(customerDTO.getIdentityNumber())) {
             if(this.customerRepository.existsByIdentityNumber(customerDTO.getIdentityNumber())) {
-                throw new IdentityNumberIsAlreadyExistException(customerDTO.getIdentityNumber() + "--> This id number already exists.");
+                throw new IdentityNumberIsAlreadyExistException(customerDTO.getIdentityNumber() + " --> This id number already exists.");
             }
         }
 
         if(!toUpdateCustomer.getPhoneNumber().equals(customerDTO.getPhoneNumber())) {
             if(this.customerRepository.existsByIdentityNumber(customerDTO.getPhoneNumber())) {
-                throw new PhoneNumberIsAlreadyExistException(customerDTO.getPhoneNumber() + "--> This phone number already exists.");
+                throw new PhoneNumberIsAlreadyExistException(customerDTO.getPhoneNumber() + " --> This phone number already exists.");
             }
         }
 
         toUpdateCustomer = this.customerMapper.fromCustomerDtoToCustomer(customerDTO);
         this.customerRepository.save(toUpdateCustomer);
-        this.applicationService.update(toUpdateCustomer, this.customerRepository.findCustomerByApplicationId(toUpdateCustomer.getId()));
         log.info("ICustomerService: Application updated.");
-
         return this.customerMapper.fromCustomerToCustomerDto(toUpdateCustomer);
     }
 
@@ -91,6 +85,19 @@ public class CustomerServiceImpl implements CustomerService {
         if(!optionalCustomer.isPresent()) {
             throw new NotFoundException("Customer with id " + id + " could not be found!");
         }
+        Customer customer = optionalCustomer.get();
+
+        return this.customerMapper.fromCustomerToCustomerDto(customer);
+    }
+
+    @Override
+    public CustomerDTO findCustomerByIdentityNumber(String identityNumber) {
+        Optional<Customer> optionalCustomer = this.customerRepository.findCustomerByIdentityNumber(identityNumber);
+
+        if(!optionalCustomer.isPresent()) {
+            throw new NotFoundException("Customer with id number " + identityNumber + " could not be found!");
+        }
+
         Customer customer = optionalCustomer.get();
 
         return this.customerMapper.fromCustomerToCustomerDto(customer);

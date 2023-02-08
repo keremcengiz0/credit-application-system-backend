@@ -1,17 +1,13 @@
 package com.keremcengiz0.creditapplicationsystem.controllers;
 
-import com.keremcengiz0.creditapplicationsystem.CreditApplicationSystemApplication;
 import com.keremcengiz0.creditapplicationsystem.dtos.ApplicationDTO;
+import com.keremcengiz0.creditapplicationsystem.requests.ApplicationCreateRequest;
 import com.keremcengiz0.creditapplicationsystem.services.abstracts.ApplicationService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,5 +33,12 @@ public class ApplicationController {
     public ResponseEntity<ApplicationDTO> getStatus(@PathVariable(value = "identityNumber") String identityNumber) {
         log.info("ApplicationController: A request has been received to list one application.");
         return new ResponseEntity<>(this.applicationService.getStatus(identityNumber), HttpStatus.OK);
+    }
+
+    @PostMapping("/{identityNumber}")
+    public ResponseEntity<ApplicationDTO> createOneApplication(@RequestBody ApplicationCreateRequest applicationCreateRequest,
+                                                               @PathVariable(value = "identityNumber") String identityNumber) {
+        log.info("ApplicationController: A request has been received to create one application.");
+        return new ResponseEntity<>(this.applicationService.makeAnApplication(applicationCreateRequest, identityNumber), HttpStatus.OK);
     }
 }

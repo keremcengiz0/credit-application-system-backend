@@ -4,6 +4,7 @@ import com.keremcengiz0.creditapplicationsystem.entities.ApplicationError;
 import com.keremcengiz0.creditapplicationsystem.exceptions.IdentityNumberIsAlreadyExistException;
 import com.keremcengiz0.creditapplicationsystem.exceptions.NotFoundException;
 import com.keremcengiz0.creditapplicationsystem.exceptions.PhoneNumberIsAlreadyExistException;
+import com.keremcengiz0.creditapplicationsystem.exceptions.UserNotFoundException;
 import com.keremcengiz0.creditapplicationsystem.repositories.ApplicationErrorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,5 +56,14 @@ public class GlobalExceptionHandler {
         this.applicationErrorRepository.save(applicationError);
         log.error("GlobalExceptionHandler: " + e.getMessage());
         return new ResponseEntity<>(applicationError, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    private ResponseEntity<ApplicationError> handleNotFoundException(UserNotFoundException e) {
+        ApplicationError applicationError = initializeError(HttpStatus.NOT_FOUND, e.getMessage());
+        this.applicationErrorRepository.save(applicationError);
+        log.error("GlobalExceptionHandler: " + e.getMessage());
+        return new ResponseEntity<>(applicationError, HttpStatus.NOT_FOUND);
     }
 }

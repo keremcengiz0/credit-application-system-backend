@@ -1,5 +1,6 @@
 package com.keremcengiz0.creditapplicationsystem.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.keremcengiz0.creditapplicationsystem.enums.CreditResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,12 @@ public class Application extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "salary", nullable = false, precision=6, scale=0)
+    private BigDecimal salary;
+
+    @Column(name = "credit_score", nullable = false)
+    private int creditScore;
+
     @Column(name = "credit_limit")
     private BigDecimal creditLimit;
 
@@ -29,7 +36,8 @@ public class Application extends BaseEntity{
     @Column(name = "credit_result")
     private CreditResult creditResult;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @JsonBackReference
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 }

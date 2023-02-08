@@ -1,6 +1,7 @@
 package com.keremcengiz0.creditapplicationsystem.services.abstracts;
 
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
+import com.keremcengiz0.creditapplicationsystem.entities.Customer;
 
 import java.util.List;
 
@@ -10,4 +11,5 @@ public interface CustomerService {
     void delete(Long id);
     List<CustomerDTO> getAll();
     CustomerDTO getOneCustomer(Long id);
+    CustomerDTO findCustomerByIdentityNumber(String identityNumber);
 }
