@@ -2,10 +2,7 @@ package com.keremcengiz0.creditapplicationsystem.mappers;
 
 import com.keremcengiz0.creditapplicationsystem.dtos.ApplicationDTO;
 import com.keremcengiz0.creditapplicationsystem.entities.Application;
-import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 

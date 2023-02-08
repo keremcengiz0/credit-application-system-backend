@@ -1,7 +1,6 @@
 package com.keremcengiz0.creditapplicationsystem.services.abstracts;
 
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
-import com.keremcengiz0.creditapplicationsystem.entities.Customer;
 
 import java.util.List;
 

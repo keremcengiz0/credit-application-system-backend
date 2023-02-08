@@ -7,7 +7,6 @@ import com.keremcengiz0.creditapplicationsystem.exceptions.NotFoundException;
 import com.keremcengiz0.creditapplicationsystem.exceptions.PhoneNumberIsAlreadyExistException;
 import com.keremcengiz0.creditapplicationsystem.mappers.CustomerMapper;
 import com.keremcengiz0.creditapplicationsystem.repositories.CustomerRepository;
-import com.keremcengiz0.creditapplicationsystem.services.abstracts.ApplicationService;
 import com.keremcengiz0.creditapplicationsystem.services.abstracts.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

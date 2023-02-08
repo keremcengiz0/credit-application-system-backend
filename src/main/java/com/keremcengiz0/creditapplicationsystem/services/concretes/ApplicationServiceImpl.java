@@ -18,11 +18,12 @@ import com.keremcengiz0.creditapplicationsystem.services.abstracts.CustomerServi
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -88,15 +89,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public ApplicationDTO getStatus(String identityNumber) {
-        Optional<Application> optionalApplication = Optional.ofNullable(this.applicationRepository.findByCustomerIdentityNumber(identityNumber));
+    public List<ApplicationDTO> getStatusWithParam(String identityNumber, LocalDate birthDate) {
+        List<Application> applicationList = this.applicationRepository.getAllApplicationsByCustomerIdentityNumberAndBirthdate(identityNumber, birthDate);
 
-        if(!optionalApplication.isPresent()) {
-            throw new NotFoundException("The application for" + identityNumber + " number was not found!");
+        if(applicationList.isEmpty()) {
+            throw new NotFoundException("The applications for" + identityNumber + " number and " + birthDate + " birthdate was not found!");
         }
-        Application application = optionalApplication.get();
-        return this.applicationMapper.fromApplicationToApplicationDto(application);
+
+        return this.applicationMapper.fromApplicationListToApplicationDtoList(applicationList);
     }
+
 
     @Override
     public Map<String, Object> applicationResult(int score, BigDecimal salary) {
