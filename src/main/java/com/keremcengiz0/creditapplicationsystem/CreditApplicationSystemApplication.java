@@ -1,6 +1,5 @@
 package com.keremcengiz0.creditapplicationsystem;
 
-import com.keremcengiz0.creditapplicationsystem.mappers.CustomerMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
