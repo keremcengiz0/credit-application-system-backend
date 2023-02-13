@@ -1,10 +1,12 @@
 package com.keremcengiz0.creditapplicationsystem.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerCreateRequest;
+import com.keremcengiz0.creditapplicationsystem.requests.CustomerUpdateRequest;
 import com.keremcengiz0.creditapplicationsystem.services.abstracts.CustomerService;
 import com.keremcengiz0.creditapplicationsystem.utils.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,7 +52,7 @@ class CustomerControllerTest {
     void save() throws Exception {
         CustomerCreateRequest customerCreateRequest = TestDataFactory.prepareCustomerCreateRequest();
 
-        CustomerDTO expectedResponse = TestDataFactory.prepareCustomerDTO();
+        CustomerDTO expectedResponse = TestDataFactory.prepareCustomerDTOForCreate();
 
         when(customerService.save(customerCreateRequest)).thenReturn(expectedResponse);
 
@@ -66,4 +69,25 @@ class CustomerControllerTest {
         verify(customerService, times(1)).save(customerCreateRequest);
     }
 
+    @Test
+    void update() throws Exception {
+        CustomerUpdateRequest customerUpdateRequest = TestDataFactory.prepareCustomerUpdateRequest();
+
+        CustomerDTO expectedResponse = TestDataFactory.prepareCustomerDTOForUpdate();
+
+        when(customerService.update(customerUpdateRequest)).thenReturn(expectedResponse);
+
+        MvcResult result = mockMvc.perform(put("/api/v1/customers/{id}",customerUpdateRequest.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerUpdateRequest)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        CustomerDTO actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(),CustomerDTO.class);
+
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
+
+        verify(customerService, times(1)).update(customerUpdateRequest);
+
+    }
 }
