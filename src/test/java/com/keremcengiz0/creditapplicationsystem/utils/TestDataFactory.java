@@ -51,5 +51,16 @@ public class TestDataFactory {
                 .build();
     }
 
+    public static CustomerDTO prepareCustomerDTOForDelete() {
+        return CustomerDTO.builder()
+                .id(1L)
+                .identityNumber("14725836914")
+                .firstName("Huseyin")
+                .lastName("Cengiz")
+                .phoneNumber("1472583691")
+                .birthDate(LocalDate.of(1999, 7, 31))
+                .build();
+    }
+
 
 }
