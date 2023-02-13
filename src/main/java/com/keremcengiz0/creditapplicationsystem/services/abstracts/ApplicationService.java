@@ -7,7 +7,6 @@ import com.keremcengiz0.creditapplicationsystem.requests.ApplicationCreateReques
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface ApplicationService {
     ApplicationDTO makeAnApplication(ApplicationCreateRequest applicationCreateRequest, String identityNumber);

@@ -3,6 +3,7 @@ package com.keremcengiz0.creditapplicationsystem.services.abstracts;
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerCreateRequest;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerUpdateRequest;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
