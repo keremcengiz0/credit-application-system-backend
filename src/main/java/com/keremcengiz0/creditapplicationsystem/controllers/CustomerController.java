@@ -1,6 +1,8 @@
 package com.keremcengiz0.creditapplicationsystem.controllers;
 
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
+import com.keremcengiz0.creditapplicationsystem.requests.CustomerCreateRequest;
+import com.keremcengiz0.creditapplicationsystem.requests.CustomerUpdateRequest;
 import com.keremcengiz0.creditapplicationsystem.services.abstracts.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +25,16 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerDTO> save(@RequestBody @Valid CustomerDTO customerDTO) {
+    public ResponseEntity<CustomerDTO> save(@RequestBody @Valid CustomerCreateRequest customerCreateRequest) {
         log.info("CustomerController: A request has been received to create a customer. ");
-        return new ResponseEntity<>(this.customerService.save(customerDTO), HttpStatus.OK);
+        return new ResponseEntity<>(this.customerService.save(customerCreateRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerDTO> update(@RequestBody @Valid CustomerDTO customerDTO, @PathVariable(name = "id") Long id) {
-        customerDTO.setId(id);
+    public ResponseEntity<CustomerDTO> update(@RequestBody @Valid CustomerUpdateRequest customerUpdateRequest, @PathVariable(name = "id") Long id) {
+        customerUpdateRequest.setId(id);
         log.info("CustomerController: A request has been received to update a customer. ");
-        return new ResponseEntity<>(this.customerService.update(customerDTO), HttpStatus.OK);
+        return new ResponseEntity<>(this.customerService.update(customerUpdateRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

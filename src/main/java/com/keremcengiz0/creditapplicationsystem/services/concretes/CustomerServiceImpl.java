@@ -7,6 +7,8 @@ import com.keremcengiz0.creditapplicationsystem.exceptions.NotFoundException;
 import com.keremcengiz0.creditapplicationsystem.exceptions.PhoneNumberIsAlreadyExistException;
 import com.keremcengiz0.creditapplicationsystem.mappers.CustomerMapper;
 import com.keremcengiz0.creditapplicationsystem.repositories.CustomerRepository;
+import com.keremcengiz0.creditapplicationsystem.requests.CustomerCreateRequest;
+import com.keremcengiz0.creditapplicationsystem.requests.CustomerUpdateRequest;
 import com.keremcengiz0.creditapplicationsystem.services.abstracts.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO save(CustomerDTO customerDTO) {
+    public CustomerDTO save(CustomerCreateRequest customerCreateRequest) {
+        CustomerDTO customerDTO = this.customerMapper.fromCustomerCreateRequestToCustomerDto(customerCreateRequest);
         if(this.customerRepository.existsByIdentityNumber(customerDTO.getIdentityNumber())) {
             throw new IdentityNumberIsAlreadyExistException(customerDTO.getIdentityNumber() + " --> This id number already exists.");
         }
@@ -45,7 +48,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO update(CustomerDTO customerDTO) {
+    public CustomerDTO update(CustomerUpdateRequest customerUpdateRequest) {
+        CustomerDTO customerDTO = this.customerMapper.fromCustomerUpdateRequestToCustomerDto(customerUpdateRequest);
+
         Customer toUpdateCustomer = this.customerRepository.findById(customerDTO.getId()).get();
 
         if(!toUpdateCustomer.getIdentityNumber().equals(customerDTO.getIdentityNumber())) {
