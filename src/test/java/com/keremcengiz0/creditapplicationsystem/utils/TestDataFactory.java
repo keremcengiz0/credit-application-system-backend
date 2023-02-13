@@ -5,6 +5,8 @@ import com.keremcengiz0.creditapplicationsystem.requests.CustomerCreateRequest;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerUpdateRequest;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 public class TestDataFactory {
 
@@ -51,15 +53,47 @@ public class TestDataFactory {
                 .build();
     }
 
-    public static CustomerDTO prepareCustomerDTOForDelete() {
-        return CustomerDTO.builder()
+    public static List<CustomerDTO> prepareCustomerDTOForGetAll() {
+
+        CustomerDTO customerDto1 = CustomerDTO.builder()
                 .id(1L)
                 .identityNumber("14725836914")
                 .firstName("Huseyin")
                 .lastName("Cengiz")
                 .phoneNumber("1472583691")
+                .birthDate(LocalDate.of(1998, 3, 5))
+                .build();
+
+        CustomerDTO customerDto2 = CustomerDTO.builder()
+                .id(2L)
+                .identityNumber("14725836915")
+                .firstName("Kerem")
+                .lastName("Cengiz")
+                .phoneNumber("1472583692")
                 .birthDate(LocalDate.of(1999, 7, 31))
                 .build();
+
+        CustomerDTO customerDto3 = CustomerDTO.builder()
+                .id(3L)
+                .identityNumber("14725836916")
+                .firstName("Hilal")
+                .lastName("Cengiz")
+                .phoneNumber("1472583693")
+                .birthDate(LocalDate.of(2001, 10, 7))
+                .build();
+
+        CustomerDTO customerDto4 = CustomerDTO.builder()
+                .id(4L)
+                .identityNumber("14725836917")
+                .firstName("Hulya")
+                .lastName("Cengiz")
+                .phoneNumber("1472583694")
+                .birthDate(LocalDate.of(2003, 5, 25))
+                .build();
+
+        List<CustomerDTO> customerDTOList = Arrays.asList(customerDto1 ,customerDto2, customerDto3, customerDto4);
+
+        return customerDTOList;
     }
 
 
