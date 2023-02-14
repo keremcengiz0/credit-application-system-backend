@@ -7,12 +7,11 @@ import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerCreateRequest;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerUpdateRequest;
 import com.keremcengiz0.creditapplicationsystem.services.abstracts.CustomerService;
-import com.keremcengiz0.creditapplicationsystem.utils.TestDataFactory;
+import com.keremcengiz0.creditapplicationsystem.utils.CustomerTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -50,9 +49,9 @@ class CustomerControllerTest {
 
     @Test
     void save() throws Exception {
-        CustomerCreateRequest customerCreateRequest = TestDataFactory.prepareCustomerCreateRequest();
+        CustomerCreateRequest customerCreateRequest = CustomerTestDataFactory.prepareCustomerCreateRequest();
 
-        CustomerDTO expectedResponse = TestDataFactory.prepareCustomerDTOForCreate();
+        CustomerDTO expectedResponse = CustomerTestDataFactory.prepareCustomerDTOForCreate();
 
         when(customerService.save(customerCreateRequest)).thenReturn(expectedResponse);
 
@@ -71,9 +70,9 @@ class CustomerControllerTest {
 
     @Test
     void update() throws Exception {
-        CustomerUpdateRequest customerUpdateRequest = TestDataFactory.prepareCustomerUpdateRequest();
+        CustomerUpdateRequest customerUpdateRequest = CustomerTestDataFactory.prepareCustomerUpdateRequest();
 
-        CustomerDTO expectedResponse = TestDataFactory.prepareCustomerDTOForUpdate();
+        CustomerDTO expectedResponse = CustomerTestDataFactory.prepareCustomerDTOForUpdate();
 
         when(customerService.update(customerUpdateRequest)).thenReturn(expectedResponse);
 
@@ -107,7 +106,7 @@ class CustomerControllerTest {
 
     @Test
     void getAll() throws Exception {
-        List<CustomerDTO> expectedCustomerDTOList = TestDataFactory.prepareCustomerDTOForGetAll();
+        List<CustomerDTO> expectedCustomerDTOList = CustomerTestDataFactory.prepareCustomerDTOForGetAll();
 
         when(customerService.getAll()).thenReturn(expectedCustomerDTOList);
 
@@ -126,7 +125,7 @@ class CustomerControllerTest {
 
     @Test
     void getOneCustomer() throws Exception {
-        CustomerDTO expectedCustomerDTO = TestDataFactory.prepareCustomerDTOForGetAll().get(0);
+        CustomerDTO expectedCustomerDTO = CustomerTestDataFactory.prepareCustomerDTOForGetAll().get(0);
 
         when(customerService.getOneCustomer(expectedCustomerDTO.getId())).thenReturn(expectedCustomerDTO);
 

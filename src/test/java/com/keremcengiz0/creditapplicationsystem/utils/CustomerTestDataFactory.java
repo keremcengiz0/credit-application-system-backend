@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-public class TestDataFactory {
+public class CustomerTestDataFactory {
 
     public static CustomerCreateRequest prepareCustomerCreateRequest() {
         return CustomerCreateRequest.builder()
