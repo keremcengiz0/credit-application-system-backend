@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.entities.Customer;
 import com.keremcengiz0.creditapplicationsystem.exceptions.IdentityNumberIsAlreadyExistException;
+import com.keremcengiz0.creditapplicationsystem.exceptions.NotFoundException;
 import com.keremcengiz0.creditapplicationsystem.exceptions.PhoneNumberIsAlreadyExistException;
 import com.keremcengiz0.creditapplicationsystem.mappers.CustomerMapper;
 import com.keremcengiz0.creditapplicationsystem.repositories.CustomerRepository;
@@ -178,6 +179,15 @@ class CustomerServiceImplTest {
         assertEquals(expectedCustomer.getId(), actualResponse.getId());
         assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedCustomer);
 
+    }
+
+    @Test
+    void getOneCustomer_WhenCustomerNotFound_ThenShouldThrowNotFoundException() {
+        Long customerId = 12L;
+
+        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> customerService.getOneCustomer(customerId));
     }
 
 }
