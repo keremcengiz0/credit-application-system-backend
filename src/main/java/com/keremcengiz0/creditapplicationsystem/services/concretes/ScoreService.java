@@ -8,7 +8,6 @@ import java.util.Random;
 @Service
 public class ScoreService {
     private int score;
-    private boolean success;
 
     public int generateRandomScore(String identityNumber) {
         Random random = new Random();
@@ -17,15 +16,8 @@ public class ScoreService {
         return score;
     }
 
-    public void setSuccess() {
-        this.success = this.score >= 500;
-    }
-
     public int getScore(String identity) {
         return this.score;
     }
 
-    public boolean getSuccess() {
-        return this.success;
-    }
 }
