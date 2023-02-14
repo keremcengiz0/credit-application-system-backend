@@ -10,7 +10,7 @@ public class ScoreService {
     private int score;
     private boolean success;
 
-    public int generateRandomScore() {
+    public int generateRandomScore(String identityNumber) {
         Random random = new Random();
         this.score = random.nextInt(1700) + 300;
         log.info("Random score generated.");

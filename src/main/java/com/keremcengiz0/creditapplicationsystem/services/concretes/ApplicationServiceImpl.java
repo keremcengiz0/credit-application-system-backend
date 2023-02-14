@@ -59,7 +59,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new UserNotFoundException("The customer to apply with " + customer.getId() + " id could not be found!");
         }
 
-        this.scoreService.generateRandomScore();
+        this.scoreService.generateRandomScore(customer.getIdentityNumber());
 
         ApplicationResultDTO applicationResultDTO = applicationResult(this.scoreService.getScore(customer.getIdentityNumber()),
                 applicationCreateRequest.getSalary(),
