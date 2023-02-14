@@ -165,4 +165,19 @@ class CustomerServiceImplTest {
         assertEquals(customerDTOList, actualCustomerDtoList);
 
     }
+
+    @Test
+    void getOneCustomer_WhenCustomerExists_ThenShouldReturnCustomer() {
+        Customer expectedCustomer = CustomerTestDataFactory.prepareCustomerForGetOneCustomer();
+
+        when(customerRepository.findById(expectedCustomer.getId())).thenReturn(Optional.of(expectedCustomer));
+
+        CustomerDTO actualResponse = customerService.getOneCustomer(expectedCustomer.getId());
+
+        assertNotNull(actualResponse);
+        assertEquals(expectedCustomer.getId(), actualResponse.getId());
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedCustomer);
+
+    }
+
 }
