@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -117,6 +118,7 @@ class CustomerServiceImplTest {
         customerUpdateRequest.setIdentityNumber("57487898745");
         CustomerDTO expectedResponse = CustomerTestDataFactory.prepareCustomerDTOForUpdate();
         expectedResponse.setIdentityNumber(customerUpdateRequest.getIdentityNumber());
+
         Customer customer = CustomerTestDataFactory.prepareCustomerForUpdate();
 
         when(customerRepository.findById(expectedResponse.getId())).thenReturn(Optional.ofNullable(customer));
@@ -125,4 +127,42 @@ class CustomerServiceImplTest {
         assertThrows(IdentityNumberIsAlreadyExistException.class, () -> customerService.update(customerUpdateRequest));
     }
 
+    @Test
+    void update_WhenPhoneNumberAlreadyExists_ThenShouldThrowException() {
+        CustomerUpdateRequest customerUpdateRequest = CustomerTestDataFactory.prepareCustomerUpdateRequest();
+        customerUpdateRequest.setPhoneNumber("4781254887");
+        CustomerDTO expectedResponse = CustomerTestDataFactory.prepareCustomerDTOForUpdate();
+        expectedResponse.setPhoneNumber(customerUpdateRequest.getPhoneNumber());
+
+        Customer customer = CustomerTestDataFactory.prepareCustomerForUpdate();
+
+        when(customerRepository.findById(expectedResponse.getId())).thenReturn(Optional.ofNullable(customer));
+        when(customerRepository.existsByPhoneNumber(expectedResponse.getPhoneNumber())).thenReturn(true);
+
+        assertThrows(PhoneNumberIsAlreadyExistException.class, () -> customerService.update(customerUpdateRequest));
+    }
+
+    @Test
+    void delete_WhenProperIdParameterIsGiven_ThenShouldDeleteCustomer() {
+        Customer customer = CustomerTestDataFactory.prepareCustomerForDelete();
+        Long customerId = customer.getId();
+
+        customerService.delete(customerId);
+        verify(customerRepository, times(1)).deleteById(customerId);
+
+    }
+
+    @Test
+    void getAll_WhenProperInputIsGiven_ThenShouldReturnCustomerDTOList() {
+        List<CustomerDTO> customerDTOList = CustomerTestDataFactory.prepareCustomerDTOForGetAll();
+        List<Customer> customerList = customerMapper.fromCustomerDtoListToCustomerList(customerDTOList);
+
+        when(customerRepository.findAll()).thenReturn(customerList);
+
+        List<CustomerDTO> actualCustomerDtoList = customerService.getAll();
+
+        assertEquals(customerList.size(), actualCustomerDtoList.size());
+        assertEquals(customerDTOList, actualCustomerDtoList);
+
+    }
 }

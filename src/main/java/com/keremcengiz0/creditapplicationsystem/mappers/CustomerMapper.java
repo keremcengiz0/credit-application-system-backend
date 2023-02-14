@@ -18,5 +18,7 @@ public interface CustomerMapper {
     CustomerDTO fromCustomerCreateRequestToCustomerDto(CustomerCreateRequest customerCreateRequest);
     CustomerDTO fromCustomerUpdateRequestToCustomerDto(CustomerUpdateRequest customerUpdateRequest);
     List<CustomerDTO> fromCustomerListToCustomerDtoList(List<Customer> customers);
+    List<Customer> fromCustomerDtoListToCustomerList(List<CustomerDTO> customers);
+
 
 }
