@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -79,8 +80,8 @@ class CustomerControllerTest {
         MvcResult result = mockMvc.perform(put("/api/v1/customers/{id}",customerUpdateRequest.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerUpdateRequest)))
-                .andExpect(status().isOk())
-                .andReturn();
+                        .andExpect(status().isOk())
+                        .andReturn();
 
         CustomerDTO actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(),CustomerDTO.class);
 
@@ -111,16 +112,15 @@ class CustomerControllerTest {
         when(customerService.getAll()).thenReturn(expectedCustomerDTOList);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expectedCustomerDTOList)))
-                .andExpect(status().isOk())
-                .andReturn();
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andReturn();
 
-        List<CustomerDTO> actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<CustomerDTO>>() {});
+        List<CustomerDTO> actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+        });
 
         assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedCustomerDTOList);
-        assertThat(result.getResponse().getStatus()).usingRecursiveComparison().isEqualTo(HttpStatus.OK.value());
-        assertThat(actualResponse.size()).usingRecursiveComparison().isEqualTo(expectedCustomerDTOList.size());
+        assertEquals(actualResponse.size(),expectedCustomerDTOList.size());
         verify(customerService, times(1)).getAll();
     }
 
@@ -131,8 +131,7 @@ class CustomerControllerTest {
         when(customerService.getOneCustomer(expectedCustomerDTO.getId())).thenReturn(expectedCustomerDTO);
 
        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers/get/{id}", expectedCustomerDTO.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(expectedCustomerDTO)))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
