@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.entities.Customer;
+import com.keremcengiz0.creditapplicationsystem.exceptions.IdentityNumberIsAlreadyExistException;
+import com.keremcengiz0.creditapplicationsystem.exceptions.PhoneNumberIsAlreadyExistException;
 import com.keremcengiz0.creditapplicationsystem.mappers.CustomerMapper;
 import com.keremcengiz0.creditapplicationsystem.repositories.CustomerRepository;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerCreateRequest;
+import com.keremcengiz0.creditapplicationsystem.requests.CustomerUpdateRequest;
 import com.keremcengiz0.creditapplicationsystem.services.abstracts.CustomerService;
 import com.keremcengiz0.creditapplicationsystem.utils.CustomerTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,4 +62,67 @@ class CustomerServiceImplTest {
         verify(customerRepository, times(1)).existsByPhoneNumber(customerCreateRequest.getPhoneNumber());
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
+
+    @Test
+    void save_WhenIdentityNumberAlreadyExists_ThenShouldThrowIdentityNumberIsAlreadyExistException() {
+        CustomerCreateRequest customerCreateRequest = CustomerTestDataFactory.prepareCustomerCreateRequest();
+        CustomerDTO expectedResponse = CustomerTestDataFactory.prepareCustomerDTOForCreate();
+
+        when(customerRepository.existsByIdentityNumber(expectedResponse.getIdentityNumber())).thenReturn(true);
+
+        try {
+            customerService.save(customerCreateRequest);
+            fail("Expected IdentityNumberIsAlreadyExistException was not thrown.");
+        } catch (IdentityNumberIsAlreadyExistException ex) {
+            assertThat(ex.getMessage()).isEqualTo(expectedResponse.getIdentityNumber() + " --> This id number already exists.");
+        }
+    }
+
+    @Test
+    void save_WhenPhoneNumberAlreadyExists_ThenShouldThrowPhoneNumberIsAlreadyExistException() {
+        CustomerCreateRequest customerCreateRequest = CustomerTestDataFactory.prepareCustomerCreateRequest();
+        CustomerDTO expectedResponse = CustomerTestDataFactory.prepareCustomerDTOForCreate();
+
+        when(customerRepository.existsByPhoneNumber(expectedResponse.getPhoneNumber())).thenReturn(true);
+
+        try {
+            customerService.save(customerCreateRequest);
+            fail("Expected PhoneNumberIsAlreadyExistException was not thrown.");
+        } catch (PhoneNumberIsAlreadyExistException ex) {
+            assertThat(ex.getMessage()).isEqualTo(expectedResponse.getPhoneNumber() + " --> This phone number already exists.");
+        }
+    }
+
+    @Test
+    void update_WhenProperInputIsGiven_ThenShouldSuccess() {
+        CustomerUpdateRequest customerUpdateRequest = CustomerTestDataFactory.prepareCustomerUpdateRequest();
+        CustomerDTO expectedResponse = CustomerTestDataFactory.prepareCustomerDTOForUpdate();
+        Customer customer = CustomerTestDataFactory.prepareCustomerForUpdate();
+
+        when(customerRepository.findById(customerUpdateRequest.getId())).thenReturn(Optional.ofNullable(customer));
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+
+        CustomerDTO actualResponse = customerService.update(customerUpdateRequest);
+
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
+
+        verify(customerRepository, times(1)).findById(customerUpdateRequest.getId());
+        verify(customerRepository, times(1)).save(any(Customer.class));
+
+    }
+
+    @Test
+    void update_WhenIdentityNumberAlreadyExists_ThenShouldThrowException() {
+        CustomerUpdateRequest customerUpdateRequest = CustomerTestDataFactory.prepareCustomerUpdateRequest();
+        customerUpdateRequest.setIdentityNumber("57487898745");
+        CustomerDTO expectedResponse = CustomerTestDataFactory.prepareCustomerDTOForUpdate();
+        expectedResponse.setIdentityNumber(customerUpdateRequest.getIdentityNumber());
+        Customer customer = CustomerTestDataFactory.prepareCustomerForUpdate();
+
+        when(customerRepository.findById(expectedResponse.getId())).thenReturn(Optional.ofNullable(customer));
+        when(customerRepository.existsByIdentityNumber(expectedResponse.getIdentityNumber())).thenReturn(true);
+
+        assertThrows(IdentityNumberIsAlreadyExistException.class, () -> customerService.update(customerUpdateRequest));
+    }
+
 }

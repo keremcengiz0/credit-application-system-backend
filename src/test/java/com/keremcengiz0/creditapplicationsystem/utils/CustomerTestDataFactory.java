@@ -1,6 +1,7 @@
 package com.keremcengiz0.creditapplicationsystem.utils;
 
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
+import com.keremcengiz0.creditapplicationsystem.entities.Customer;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerCreateRequest;
 import com.keremcengiz0.creditapplicationsystem.requests.CustomerUpdateRequest;
 
@@ -12,6 +13,17 @@ public class CustomerTestDataFactory {
 
     public static CustomerCreateRequest prepareCustomerCreateRequest() {
         return CustomerCreateRequest.builder()
+                .identityNumber("12345678912")
+                .firstName("Kerem")
+                .lastName("Cengiz")
+                .phoneNumber("1472583698")
+                .birthDate(LocalDate.of(1999, 7, 31))
+                .build();
+    }
+
+    public static Customer prepareCustomerForCreate() {
+        return Customer.builder()
+                .id(1L)
                 .identityNumber("12345678912")
                 .firstName("Kerem")
                 .lastName("Cengiz")
@@ -38,7 +50,18 @@ public class CustomerTestDataFactory {
                 .firstName("Huseyin")
                 .lastName("Cengiz")
                 .phoneNumber("1472583691")
-                .birthDate(LocalDate.of(1998, 3, 5))
+                .birthDate(LocalDate.of(1999, 7, 31))
+                .build();
+    }
+
+    public static Customer prepareCustomerForUpdate() {
+        return Customer.builder()
+                .id(1L)
+                .identityNumber("14725836914")
+                .firstName("Huseyin")
+                .lastName("Cengiz")
+                .phoneNumber("1472583691")
+                .birthDate(LocalDate.of(1999, 7, 31))
                 .build();
     }
 
