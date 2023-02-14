@@ -168,7 +168,7 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void getOneCustomer_WhenCustomerExists_ThenShouldReturnCustomer() {
+    void getOneCustomer_WhenCustomerExists_ThenShouldReturnCustomerDTO() {
         Customer expectedCustomer = CustomerTestDataFactory.prepareCustomerForGetOneCustomer();
 
         when(customerRepository.findById(expectedCustomer.getId())).thenReturn(Optional.of(expectedCustomer));
@@ -188,6 +188,28 @@ class CustomerServiceImplTest {
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> customerService.getOneCustomer(customerId));
+    }
+
+    @Test
+    void findCustomerByIdentityNumber_WhenCustomerExists_ThenShouldReturnCustomerDTO() {
+        Customer expectedCustomer = CustomerTestDataFactory.prepareCustomerForGetOneCustomer();
+
+        when(customerRepository.findCustomerByIdentityNumber(expectedCustomer.getIdentityNumber())).thenReturn(Optional.of(expectedCustomer));
+
+        CustomerDTO actualResponse = customerService.findCustomerByIdentityNumber(expectedCustomer.getIdentityNumber());
+
+        assertNotNull(actualResponse);
+        assertEquals(expectedCustomer.getIdentityNumber(), actualResponse.getIdentityNumber());
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedCustomer);
+    }
+
+    @Test
+    void findCustomerByIdentityNumber_WhenCustomerNotFound_ThenShouldThrowNotFoundException() {
+        String customerIdentityNumber = "55555555555" ;
+
+        when(customerRepository.findCustomerByIdentityNumber(customerIdentityNumber)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> customerService.findCustomerByIdentityNumber(customerIdentityNumber));
     }
 
 }
