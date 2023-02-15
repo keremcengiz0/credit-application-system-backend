@@ -1,11 +1,9 @@
 package com.keremcengiz0.creditapplicationsystem.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.keremcengiz0.creditapplicationsystem.dtos.ApplicationDTO;
-import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.requests.ApplicationCreateRequest;
 import com.keremcengiz0.creditapplicationsystem.services.abstracts.ApplicationService;
 import com.keremcengiz0.creditapplicationsystem.utils.ApplicationTestDataFactory;

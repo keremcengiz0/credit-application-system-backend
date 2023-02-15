@@ -1,10 +1,11 @@
 package com.keremcengiz0.creditapplicationsystem.services.concretes;
 
 import com.keremcengiz0.creditapplicationsystem.dtos.ApplicationDTO;
-import com.keremcengiz0.creditapplicationsystem.dtos.ApplicationResultDTO;
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.entities.Application;
+import com.keremcengiz0.creditapplicationsystem.entities.Customer;
 import com.keremcengiz0.creditapplicationsystem.enums.CreditResult;
+import com.keremcengiz0.creditapplicationsystem.exceptions.UserNotFoundException;
 import com.keremcengiz0.creditapplicationsystem.mappers.ApplicationMapper;
 import com.keremcengiz0.creditapplicationsystem.mappers.CustomerMapper;
 import com.keremcengiz0.creditapplicationsystem.repositories.ApplicationErrorRepository;
@@ -20,6 +21,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,7 +51,7 @@ class ApplicationServiceImplTest {
     }
 
     @Test
-    void makeAnApplication_ScoreBelow500_ReturnUnconfirmed() {
+    void makeAnApplication_WhenScoreBelow500_ThenReturnUnconfirmedApplication() {
         ApplicationCreateRequest applicationCreateRequest = ApplicationCreateRequest.builder()
                 .salary(BigDecimal.valueOf(4000))
                 .guarantee(BigDecimal.valueOf(2000))
@@ -59,7 +62,7 @@ class ApplicationServiceImplTest {
         Application expectedResponse = applicationMapper.fromApplicationDtoToApplication(applicationDTO);
 
         when(customerService.findCustomerByIdentityNumber(customerDTO.getIdentityNumber())).thenReturn(customerDTO);
-        when(scoreService.generateRandomScore(customerDTO.getIdentityNumber())).thenReturn(300);
+        when(scoreService.getScore(customerDTO.getIdentityNumber())).thenReturn(300);
         when(applicationRepository.save(any(Application.class))).thenReturn(expectedResponse);
 
         ApplicationDTO actualResponse = applicationService.makeAnApplication(applicationCreateRequest, customerDTO.getIdentityNumber());
@@ -71,4 +74,138 @@ class ApplicationServiceImplTest {
         assertEquals(BigDecimal.valueOf(0), actualResponse.getCreditLimit());
         assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
     }
+
+    @Test
+    void makeAnApplication_WhenScoreBetween500And1000AndSalarySmallerThan5000_ThenReturnConfirmedApplication() {
+        ApplicationCreateRequest applicationCreateRequest = ApplicationCreateRequest.builder()
+                .salary(BigDecimal.valueOf(4000))
+                .guarantee(BigDecimal.valueOf(2000))
+                .build();
+
+        CustomerDTO customerDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreBetween500And1000AndSalarySmallerThan5000ConfirmedApplication().getCustomer();
+        ApplicationDTO applicationDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreBetween500And1000AndSalarySmallerThan5000ConfirmedApplication();
+        Application expectedResponse = applicationMapper.fromApplicationDtoToApplication(applicationDTO);
+
+        when(customerService.findCustomerByIdentityNumber(customerDTO.getIdentityNumber())).thenReturn(customerDTO);
+        when(scoreService.getScore(customerDTO.getIdentityNumber())).thenReturn(600);
+        when(applicationRepository.save(any(Application.class))).thenReturn(expectedResponse);
+
+        ApplicationDTO actualResponse = applicationService.makeAnApplication(applicationCreateRequest, customerDTO.getIdentityNumber());
+
+        verify(messageService, times(1)).sendSms(customerDTO.getPhoneNumber(),true);
+        verify(applicationRepository, times(1)).save(any(Application.class));
+        assertNotNull(actualResponse);
+        assertEquals(CreditResult.CONFIRMED, actualResponse.getCreditResult());
+        assertEquals(BigDecimal.valueOf(10200), actualResponse.getCreditLimit());
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void makeAnApplication_WhenScoreBetween500And1000AndSalaryBetween5000And10000_ThenReturnConfirmedApplication() {
+        ApplicationCreateRequest applicationCreateRequest = ApplicationCreateRequest.builder()
+                .salary(BigDecimal.valueOf(8000))
+                .guarantee(BigDecimal.valueOf(4000))
+                .build();
+
+        CustomerDTO customerDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreBetween500And1000AndSalaryBetween5000And10000ConfirmedApplication().getCustomer();
+        ApplicationDTO applicationDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreBetween500And1000AndSalaryBetween5000And10000ConfirmedApplication();
+        Application expectedResponse = applicationMapper.fromApplicationDtoToApplication(applicationDTO);
+
+        when(customerService.findCustomerByIdentityNumber(customerDTO.getIdentityNumber())).thenReturn(customerDTO);
+        when(scoreService.getScore(customerDTO.getIdentityNumber())).thenReturn(600);
+        when(applicationRepository.save(any(Application.class))).thenReturn(expectedResponse);
+
+        ApplicationDTO actualResponse = applicationService.makeAnApplication(applicationCreateRequest, customerDTO.getIdentityNumber());
+
+        verify(messageService, times(1)).sendSms(customerDTO.getPhoneNumber(),true);
+        verify(applicationRepository, times(1)).save(any(Application.class));
+        assertNotNull(actualResponse);
+        assertEquals(CreditResult.CONFIRMED, actualResponse.getCreditResult());
+        assertEquals(BigDecimal.valueOf(20800), actualResponse.getCreditLimit());
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void makeAnApplication_WhenScoreBetween500And1000AndSalaryOver10000_ThenReturnConfirmedApplication() {
+        ApplicationCreateRequest applicationCreateRequest = ApplicationCreateRequest.builder()
+                .salary(BigDecimal.valueOf(12000))
+                .guarantee(BigDecimal.valueOf(8000))
+                .build();
+
+        CustomerDTO customerDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreBetween500And1000AndSalaryOver10000ConfirmedApplication().getCustomer();
+        ApplicationDTO applicationDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreBetween500And1000AndSalaryOver10000ConfirmedApplication();
+        Application expectedResponse = applicationMapper.fromApplicationDtoToApplication(applicationDTO);
+
+        when(customerService.findCustomerByIdentityNumber(customerDTO.getIdentityNumber())).thenReturn(customerDTO);
+        when(scoreService.getScore(customerDTO.getIdentityNumber())).thenReturn(700);
+        when(applicationRepository.save(any(Application.class))).thenReturn(expectedResponse);
+
+        ApplicationDTO actualResponse = applicationService.makeAnApplication(applicationCreateRequest, customerDTO.getIdentityNumber());
+
+        verify(messageService, times(1)).sendSms(customerDTO.getPhoneNumber(),true);
+        verify(applicationRepository, times(1)).save(any(Application.class));
+        assertNotNull(actualResponse);
+        assertEquals(CreditResult.CONFIRMED, actualResponse.getCreditResult());
+        assertEquals(BigDecimal.valueOf(26000), actualResponse.getCreditLimit());
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void makeAnApplication_WhenScoreOver1000_ThenReturnConfirmedApplication() {
+        ApplicationCreateRequest applicationCreateRequest = ApplicationCreateRequest.builder()
+                .salary(BigDecimal.valueOf(15000))
+                .guarantee(BigDecimal.valueOf(10000))
+                .build();
+
+        CustomerDTO customerDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreOver1000ConfirmedApplication().getCustomer();
+        ApplicationDTO applicationDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreOver1000ConfirmedApplication();
+        Application expectedResponse = applicationMapper.fromApplicationDtoToApplication(applicationDTO);
+
+        when(customerService.findCustomerByIdentityNumber(customerDTO.getIdentityNumber())).thenReturn(customerDTO);
+        when(scoreService.getScore(customerDTO.getIdentityNumber())).thenReturn(1200);
+        when(applicationRepository.save(any(Application.class))).thenReturn(expectedResponse);
+
+        ApplicationDTO actualResponse = applicationService.makeAnApplication(applicationCreateRequest, customerDTO.getIdentityNumber());
+
+        verify(messageService, times(1)).sendSms(customerDTO.getPhoneNumber(),true);
+        verify(applicationRepository, times(1)).save(any(Application.class));
+        assertNotNull(actualResponse);
+        assertEquals(CreditResult.CONFIRMED, actualResponse.getCreditResult());
+        assertEquals(BigDecimal.valueOf(70000), actualResponse.getCreditLimit());
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void makeAnApplication_WhenCustomerIsNull_ThenThrowUserNotFoundException() {
+        ApplicationCreateRequest applicationCreateRequest = ApplicationCreateRequest.builder()
+                .salary(BigDecimal.valueOf(15000))
+                .guarantee(BigDecimal.valueOf(10000))
+                .build();
+
+        String identityNumber = "55555555555";
+
+        when(customerService.findCustomerByIdentityNumber(anyString())).thenReturn(null);
+
+      assertThrows(UserNotFoundException.class, () -> {
+            applicationService.makeAnApplication(applicationCreateRequest, identityNumber);
+        });
+
+    }
+
+    @Test
+    void getAllApplication_WhenProperInputIsGiven_ThenShouldReturnApplicationDTOList() {
+
+        List<ApplicationDTO> applicationDTOList = ApplicationTestDataFactory.prepareApplicationDTOForGetAll();
+        List<Application> applicationList = applicationMapper.fromApplicationDtoListToApplicationList(applicationDTOList);
+
+        when(applicationRepository.findAll()).thenReturn(applicationList);
+
+        List<ApplicationDTO> actualApplicationDTOList = applicationService.getAll();
+
+        assertEquals(applicationList.size(), actualApplicationDTOList.size());
+        assertEquals(applicationDTOList, actualApplicationDTOList);
+
+    }
+
+
 }
