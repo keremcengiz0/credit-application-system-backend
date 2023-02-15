@@ -56,7 +56,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Customer customer = this.customerMapper.fromCustomerDtoToCustomer(customerDTO);
 
         if(customer == null) {
-            throw new UserNotFoundException("The customer to apply with " + identityNumber + " identity number could not be found!");
+            throw new UserNotFoundException("The customer to apply with " + customer.getId() + " id could not be found!");
         }
 
         this.scoreService.generateRandomScore(customer.getIdentityNumber());
