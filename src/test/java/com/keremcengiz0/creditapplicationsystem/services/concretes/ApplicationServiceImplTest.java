@@ -3,8 +3,8 @@ package com.keremcengiz0.creditapplicationsystem.services.concretes;
 import com.keremcengiz0.creditapplicationsystem.dtos.ApplicationDTO;
 import com.keremcengiz0.creditapplicationsystem.dtos.CustomerDTO;
 import com.keremcengiz0.creditapplicationsystem.entities.Application;
-import com.keremcengiz0.creditapplicationsystem.entities.Customer;
 import com.keremcengiz0.creditapplicationsystem.enums.CreditResult;
+import com.keremcengiz0.creditapplicationsystem.exceptions.NotFoundException;
 import com.keremcengiz0.creditapplicationsystem.exceptions.UserNotFoundException;
 import com.keremcengiz0.creditapplicationsystem.mappers.ApplicationMapper;
 import com.keremcengiz0.creditapplicationsystem.mappers.CustomerMapper;
@@ -22,8 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -224,6 +224,19 @@ class ApplicationServiceImplTest {
         assertEquals(applicationDTOList, actualApplicationDTOList);
 
     }
+
+    @Test
+    public void GetStatusWithParam_EmptyList() {
+
+        String identityNumber = "12345678910";
+        LocalDate birthDate = LocalDate.of(2000, 1, 1);
+
+        when(applicationRepository.getAllApplicationsByCustomerIdentityNumberAndBirthdate(identityNumber, birthDate)).thenReturn(Collections.emptyList());
+
+        assertThrows(NotFoundException.class, () -> applicationService.getStatusWithParam(identityNumber, birthDate));
+
+    }
+
 
 
 }
