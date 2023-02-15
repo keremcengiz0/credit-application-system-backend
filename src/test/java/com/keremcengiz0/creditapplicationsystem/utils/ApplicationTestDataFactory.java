@@ -12,6 +12,8 @@ import java.util.List;
 
 public class ApplicationTestDataFactory {
 
+    // For Controller Test
+
     public static List<ApplicationDTO> prepareApplicationDTOForGetAll() {
         CustomerDTO customerDto1 = CustomerDTO.builder()
                 .id(1L)
@@ -173,4 +175,29 @@ public class ApplicationTestDataFactory {
         return applicationDTO1;
     }
 
+
+    //For Service Test
+
+    public static ApplicationDTO prepareApplicationDTOForUnconfirmed() {
+        CustomerDTO customerDto = CustomerDTO.builder()
+                .id(1L)
+                .identityNumber("12345678912")
+                .firstName("Huseyin")
+                .lastName("Cengiz")
+                .phoneNumber("1472583691")
+                .birthDate(LocalDate.of(1998, 3, 5))
+                .build();
+
+        ApplicationDTO applicationDTO = ApplicationDTO.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(4000))
+                .guarantee(BigDecimal.valueOf(2000))
+                .creditScore(300)
+                .creditLimit(BigDecimal.valueOf(0))
+                .creditResult(CreditResult.UNCONFIRMED)
+                .customer(customerDto)
+                .build();
+
+        return applicationDTO;
     }
+}

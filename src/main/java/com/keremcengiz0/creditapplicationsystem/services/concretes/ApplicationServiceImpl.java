@@ -80,7 +80,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         this.messageService.sendSms(customer.getPhoneNumber(), status);
         log.info("ApplicationService: SMS sent.");
 
-        return this.applicationMapper.fromApplicationToApplicationDto(this.applicationRepository.save(application));
+       Application savedApplication =  this.applicationRepository.save(application);
+
+        return this.applicationMapper.fromApplicationToApplicationDto(savedApplication);
     }
 
     @Override
