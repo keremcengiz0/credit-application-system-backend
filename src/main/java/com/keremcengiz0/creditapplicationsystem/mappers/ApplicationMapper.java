@@ -18,4 +18,6 @@ public interface ApplicationMapper {
 
     List<ApplicationDTO> fromApplicationListToApplicationDtoList(List<Application> applications);
 
+    List<Application> fromApplicationDtoListToApplicationList(List<ApplicationDTO> applicationDTOS);
+
 }
