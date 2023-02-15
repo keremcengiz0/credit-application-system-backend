@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -201,6 +202,23 @@ class ApplicationServiceImplTest {
         when(applicationRepository.findAll()).thenReturn(applicationList);
 
         List<ApplicationDTO> actualApplicationDTOList = applicationService.getAll();
+
+        assertEquals(applicationList.size(), actualApplicationDTOList.size());
+        assertEquals(applicationDTOList, actualApplicationDTOList);
+
+    }
+
+    @Test
+    void getAllApplication_WhenIdentityNumberAndBirthdateInputIsGiven_ThenShouldReturnApplicationDTOList() {
+        List<ApplicationDTO> applicationDTOList = ApplicationTestDataFactory.prepareApplicationDTOForGetStatusWithParam();
+        List<Application> applicationList = applicationMapper.fromApplicationDtoListToApplicationList(applicationDTOList);
+
+        String identityNumber = applicationDTOList.get(0).getCustomer().getIdentityNumber();
+        LocalDate birthDate = applicationDTOList.get(0).getCustomer().getBirthDate();
+
+        when(applicationRepository.getAllApplicationsByCustomerIdentityNumberAndBirthdate(identityNumber, birthDate)).thenReturn(applicationList);
+
+        List<ApplicationDTO> actualApplicationDTOList = applicationService.getStatusWithParam(identityNumber, birthDate);
 
         assertEquals(applicationList.size(), actualApplicationDTOList.size());
         assertEquals(applicationDTOList, actualApplicationDTOList);
