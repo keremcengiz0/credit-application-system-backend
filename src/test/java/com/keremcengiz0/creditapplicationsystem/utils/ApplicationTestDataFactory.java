@@ -224,6 +224,28 @@ public class ApplicationTestDataFactory {
         return applicationDTO;
     }
 
+    public static ApplicationDTO prepareApplicationDTOForScoreBetween500And1000AndSalarySmallerThan5000AndGuaranteeIsNullConfirmedApplication() {
+        CustomerDTO customerDto = CustomerDTO.builder()
+                .id(1L)
+                .identityNumber("12345678912")
+                .firstName("Huseyin")
+                .lastName("Cengiz")
+                .phoneNumber("1472583691")
+                .birthDate(LocalDate.of(1998, 3, 5))
+                .build();
+
+        ApplicationDTO applicationDTO = ApplicationDTO.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(4000))
+                .creditScore(600)
+                .creditLimit(BigDecimal.valueOf(10000))
+                .creditResult(CreditResult.CONFIRMED)
+                .customer(customerDto)
+                .build();
+
+        return applicationDTO;
+    }
+
     public static ApplicationDTO prepareApplicationDTOForScoreBetween500And1000AndSalaryBetween5000And10000ConfirmedApplication() {
         CustomerDTO customerDto = CustomerDTO.builder()
                 .id(1L)

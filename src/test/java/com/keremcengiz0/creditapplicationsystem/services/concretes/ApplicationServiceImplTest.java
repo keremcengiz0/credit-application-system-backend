@@ -102,6 +102,30 @@ class ApplicationServiceImplTest {
     }
 
     @Test
+    void makeAnApplication_WhenScoreBetween500And1000AndSalarySmallerThan5000AndGuaranteeIsNull_ThenReturnConfirmedApplication() {
+        ApplicationCreateRequest applicationCreateRequest = ApplicationCreateRequest.builder()
+                .salary(BigDecimal.valueOf(4000))
+                .build();
+
+        CustomerDTO customerDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreBetween500And1000AndSalarySmallerThan5000AndGuaranteeIsNullConfirmedApplication().getCustomer();
+        ApplicationDTO applicationDTO = ApplicationTestDataFactory.prepareApplicationDTOForScoreBetween500And1000AndSalarySmallerThan5000AndGuaranteeIsNullConfirmedApplication();
+        Application expectedResponse = applicationMapper.fromApplicationDtoToApplication(applicationDTO);
+
+        when(customerService.findCustomerByIdentityNumber(customerDTO.getIdentityNumber())).thenReturn(customerDTO);
+        when(scoreService.getScore(customerDTO.getIdentityNumber())).thenReturn(600);
+        when(applicationRepository.save(any(Application.class))).thenReturn(expectedResponse);
+
+        ApplicationDTO actualResponse = applicationService.makeAnApplication(applicationCreateRequest, customerDTO.getIdentityNumber());
+
+        verify(messageService, times(1)).sendSms(customerDTO.getPhoneNumber(),true);
+        verify(applicationRepository, times(1)).save(any(Application.class));
+        assertNotNull(actualResponse);
+        assertEquals(CreditResult.CONFIRMED, actualResponse.getCreditResult());
+        assertEquals(BigDecimal.valueOf(10000), actualResponse.getCreditLimit());
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
+    }
+
+    @Test
     void makeAnApplication_WhenScoreBetween500And1000AndSalaryBetween5000And10000_ThenReturnConfirmedApplication() {
         ApplicationCreateRequest applicationCreateRequest = ApplicationCreateRequest.builder()
                 .salary(BigDecimal.valueOf(8000))
@@ -209,7 +233,7 @@ class ApplicationServiceImplTest {
     }
 
     @Test
-    void getAllApplication_WhenIdentityNumberAndBirthdateInputIsGiven_ThenShouldReturnApplicationDTOList() {
+    void getStatusWithParam_WhenIdentityNumberAndBirthdateInputIsGiven_ThenShouldReturnApplicationDTOList() {
         List<ApplicationDTO> applicationDTOList = ApplicationTestDataFactory.prepareApplicationDTOForGetStatusWithParam();
         List<Application> applicationList = applicationMapper.fromApplicationDtoListToApplicationList(applicationDTOList);
 
@@ -226,7 +250,7 @@ class ApplicationServiceImplTest {
     }
 
     @Test
-    public void GetStatusWithParam_EmptyList() {
+    public void getStatusWithParam_WhenIdentityNumberAndBirthdateInputIsGivenAndReturnEmptyList_ThenShouldReturnNotFoundException() {
 
         String identityNumber = "12345678910";
         LocalDate birthDate = LocalDate.of(2000, 1, 1);
@@ -236,7 +260,5 @@ class ApplicationServiceImplTest {
         assertThrows(NotFoundException.class, () -> applicationService.getStatusWithParam(identityNumber, birthDate));
 
     }
-
-
 
 }
